@@ -1,0 +1,53 @@
+name: jarvis_assistant
+description: JARVIS - Asistente personal de voz
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Wake word
+  porcupine_flutter: ^3.0.2
+
+  # Speech to text
+  speech_to_text: ^6.6.0
+
+  # Text to speech
+  flutter_tts: ^4.0.0
+
+  # Notificaciones y recordatorios
+  flutter_local_notifications: ^17.2.0
+  timezone: ^0.9.4
+  workmanager: ^0.5.2
+
+  # Archivos
+  path_provider: ^2.1.3
+  file_picker: ^8.1.2
+  permission_handler: ^11.3.1
+
+  # Background service
+  flutter_background_service: ^5.0.5
+
+  # Base de datos local
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+
+  # Utilidades
+  intl: ^0.19.0
+  shared_preferences: ^2.2.3
+  uuid: ^4.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
