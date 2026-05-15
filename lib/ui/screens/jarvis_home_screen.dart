@@ -90,9 +90,9 @@ class _JarvisHomeScreenState extends State<JarvisHomeScreen>
   }
 
   Future<void> _startJarvis() async {
-    await JarvisOrchestrator.instance.init();
-    await JarvisOrchestrator.instance.startWakeWord();
-  }
+  await JarvisOrchestrator.instance.init();
+  await JarvisOrchestrator.instance.startWakeWord();
+}
 
   @override
   void dispose() {

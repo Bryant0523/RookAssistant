@@ -76,25 +76,25 @@ class JarvisOrchestrator {
   }
 
   Future<void> startWakeWord() async {
-    if (!kIsWeb) {
-      await WakeWordService.instance.start();
-    }
-    _setState(AssistantState.sleeping);
-  }
+  await WakeWordService.instance.start();
+  _setState(AssistantState.sleeping);
+}
 
   // ─── Flujo principal ───────────────────────────────────────────────────────
 
   void _onWakeWord() {
-    if (_state == AssistantState.sleeping) {
-      debugPrint('[JARVIS] Wake word → iniciando escucha');
-      _setState(AssistantState.waking);
+  if (_state == AssistantState.sleeping) {
+    debugPrint('[JARVIS] Wake word → iniciando escucha');
+    _setState(AssistantState.waking);
 
-      // Pequeño beep/confirmación y luego escuchar
+    // NUEVO: pausa el wake word antes de escuchar el comando
+    WakeWordService.instance.pause().then((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
         _startListening();
       });
-    }
+    });
   }
+}
 
   Future<void> _startListening() async {
     _setState(AssistantState.listening);
@@ -110,6 +110,7 @@ class JarvisOrchestrator {
 
   Future<void> _onSpeechResult(String text) async {
     if (text.isEmpty) {
+      await WakeWordService.instance.resume(); // NUEVO
       _setState(AssistantState.sleeping);
       return;
     }
@@ -126,6 +127,7 @@ class JarvisOrchestrator {
     // Comando de parada
     if (intent.name == 'stop') {
       await TtsService.instance.stop();
+      await WakeWordService.instance.resume(); 
       _setState(AssistantState.sleeping);
       return;
     }
@@ -141,9 +143,9 @@ class JarvisOrchestrator {
       await TtsService.instance.speak(response);
     }
 
+    await WakeWordService.instance.resume(); 
     _setState(AssistantState.sleeping);
   }
-
   Future<String> _routeToModule(JarvisIntent intent) async {
     try {
       if (RemindersModule.instance.canHandle(intent.name)) {
