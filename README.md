@@ -13,7 +13,7 @@ jarvis_app/
 │   │   ├── models/
 │   │   │   └── intent.dart                ← Modelo JarvisIntent + IntentEngine (NLU)
 │   │   └── services/
-│   │       ├── wake_word_service.dart      ← Porcupine wake word "Jarvis"
+│   │       ├── wake_word_service.dart      ← Wake word por coincidencia de palabras (STT)
 │   │       ├── speech_service.dart         ← Reconocimiento de voz (STT)
 │   │       ├── tts_service.dart            ← Síntesis de voz (TTS)
 │   │       └── jarvis_orchestrator.dart    ← Cerebro central — conecta todo
@@ -54,12 +54,13 @@ cd jarvis_app
 flutter pub get     # Instala dependencias
 ```
 
-### 3. Obtener AccessKey de Porcupine (OBLIGATORIO)
-1. Ve a https://console.picovoice.ai/
-2. Crea una cuenta gratuita (uso personal)
-3. Copia tu AccessKey
-4. Abre `lib/core/services/wake_word_service.dart`
-5. Reemplaza `'TU_ACCESS_KEY_AQUI'` con tu clave
+### 3. Configurar detección del wake word (STT)
+Este proyecto actualmente detecta el wake word usando `speech_to_text` (reconocimiento continuo y búsqueda de palabras clave), por lo que **no** es necesario un AccessKey de Picovoice.
+
+Pasos recomendados:
+1. Asegúrate de que el permiso de micrófono esté habilitado en el dispositivo.
+2. Verifica que el paquete `speech_to_text` funcione en tu dispositivo: el servicio intentará usar el motor STT nativo.
+3. Si necesitas ajustar palabras clave, edita la lista `_keywords` en `lib/core/services/wake_word_service.dart`.
 
 ### 4. Ejecutar en móvil
 ```bash
@@ -148,3 +149,15 @@ Y agrega los intents al `IntentEngine` en `intent.dart`.
 - Los datos se almacenan localmente en SQLite
 - Sin telemetría, sin servidores externos requeridos
 - Uso personal, no comercial
+
+---
+
+## Contribuir
+
+- Las pull requests son bienvenidas. Para cambios grandes, por favor abre primero un `issue` describiendo la propuesta.
+- Mantén el estilo de código del proyecto y añade tests cuando sea posible.
+
+## Contacto
+
+- Para preguntas o reportes de errores, abre un `issue` en este repositorio.
+- Si quieres colaborar directamente, crea una rama con tu feature y abre un `pull request`.

@@ -56,7 +56,12 @@ class JarvisOrchestrator {
       TtsService.instance.init(),
       RemindersModule.instance.init(),
     ]);
+    
+    WakeWordService.instance.setSttInstance(SpeechService.instance.sttInstance);
 
+    SpeechService.instance.onSttError = () {
+      WakeWordService.instance.onSttError();
+    };
     // Escuchar wake word → iniciar grabación
     _wakeWordSub = WakeWordService.instance.triggerStream.listen((_) {
       _onWakeWord();

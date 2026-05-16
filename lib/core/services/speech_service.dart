@@ -23,10 +23,20 @@ class SpeechService {
   Stream<String>      get partialStream => _partialController.stream;
   SpeechState         get state          => _state;
 
+  // Expone la instancia para compartir con WakeWordService
+  SpeechToText get sttInstance => _stt;
+
+  // NUEVO: callback — el orquestador lo conecta con WakeWordService
+  VoidCallback? onSttError;
+
   Future<void> init() async {
     _available = await _stt.initialize(
       onError: (e) {
         debugPrint('[Speech] Error: ${e.errorMsg}');
+        if (e.errorMsg == 'error_speech_timeout' ||
+            e.errorMsg == 'error_no_match') {
+          onSttError?.call(); // sin import circular
+        }
         _setState(SpeechState.error);
       },
       onStatus: (status) {
@@ -48,12 +58,10 @@ class SpeechService {
         await _stt.cancel();
         await Future.delayed(const Duration(milliseconds: 150));
       }
-
       _setState(SpeechState.listening);
-
       await _stt.listen(
         onResult: _onResult,
-        localeId: 'es_CO',          // Español Colombia — cambia a es_ES, es_MX, etc.
+        localeId: 'es_CO',
         listenMode: ListenMode.dictation,
         pauseFor: const Duration(seconds: 3),
         listenFor: const Duration(seconds: 15),
@@ -76,7 +84,6 @@ class SpeechService {
       }
       _setState(SpeechState.idle);
     } else {
-      // Resultado parcial — útil para mostrar en la UI en tiempo real
       _partialController.add(result.recognizedWords);
     }
   }
